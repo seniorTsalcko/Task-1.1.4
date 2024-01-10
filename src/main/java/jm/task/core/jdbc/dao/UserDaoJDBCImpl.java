@@ -1,40 +1,45 @@
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
-import jm.task.core.jdbc.util.Util;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static jm.task.core.jdbc.util.Util.getConnection;
 
 public class UserDaoJDBCImpl implements UserDao {
     Connection connection = getConnection();
+    static Logger LOGGER;
+
     public UserDaoJDBCImpl() {
 
     }
 
+    @Override
     public void createUsersTable() {
         String sql = "CREATE TABLE IF NOT EXISTS users (Id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
                 "name VARCHAR(50), lastName VARCHAR(50), age TINYINT)";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
-            System.out.println("UsersTable has been created!");
+            LOGGER.info("UsersTable has been created!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
     public void dropUsersTable() {
         String sql = "DROP TABLE IF EXISTS users";
-        try (Statement statement = connection.createStatement()){
+        try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
     public void saveUser(String name, String lastName, byte age) {
         String sql = "INSERT INTO users (NAME, LASTNAME, AGE) VALUES (?, ?, ?)";
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
@@ -47,6 +52,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
+    @Override
     public void removeUserById(long id) {
         String sql = "DELETE FROM users WHERE ID = ?";
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
@@ -57,6 +63,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
+    @Override
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
@@ -76,12 +83,13 @@ public class UserDaoJDBCImpl implements UserDao {
         return users;
     }
 
-        public void cleanUsersTable() {
-            String sql = "TRUNCATE TABLE users";
-            try (Statement statement = connection.createStatement()){
-                statement.executeUpdate(sql);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+    @Override
+    public void cleanUsersTable() {
+        String sql = "TRUNCATE TABLE users";
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+    }
 }
