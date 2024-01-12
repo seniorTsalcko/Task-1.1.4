@@ -1,7 +1,6 @@
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,7 @@ import static jm.task.core.jdbc.util.Util.getConnection;
 
 public class UserDaoJDBCImpl implements UserDao {
     Connection connection = getConnection();
-    static Logger LOGGER;
+    private static Logger log = Logger.getLogger(UserDaoJDBCImpl.class.getName());
 
     public UserDaoJDBCImpl() {
 
@@ -23,10 +22,13 @@ public class UserDaoJDBCImpl implements UserDao {
                 "name VARCHAR(50), lastName VARCHAR(50), age TINYINT)";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
-            LOGGER.info("UsersTable has been created!");
+            log.info("UsersTable has been created!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void info(String msg) {
     }
 
     @Override
